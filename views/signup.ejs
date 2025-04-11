@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<style>
+<%- include ('style.ejs') %>
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.wrap_signup{
+  width: 35%;
+ height: 370px;
+ background: white;
+ border-radius: 20px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-direction: column;
+ padding: 5px;
+}
+h2{
+  margin-top: 5px;
+  text-align: center;
+}
+.wrap{
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+}
+
+.submit {
+  margin-top: 20px;
+  width: 48%;
+}
+.submit input {
+  width: 100%;
+  height: 37px;
+  border: 0;
+  outline: none;
+  border-radius: 40px;
+  background: linear-gradient(to left, rgb(0, 100, 165), rgb(106, 161, 197));
+  color: white;
+  font-size: 1.0em;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+.signup_name, .signup_id, .signup_pw, .signup_pwa {
+  margin-top: 4px;
+  width: 80%;
+}
+
+.signup_name input, .signup_id input, .signup_pw input, .signup_pwa input {
+  width: 100%;
+  height: 30px;
+  border-radius: 7px;
+  margin-top: 5px;
+  padding: 0px 20px;
+  border: 3px solid #646464;
+  outline: none;
+}
+
+.margin{
+    font-size: 13px;
+}
+
+.footer {
+  margin-top: 0px;
+}
+</style>
+<head>
+    <title>univ</title>
+</head>
+<body>
+  <div class="topnav" >
+      <a href="/univ">
+      <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/></a>
+      <ul id ="fromInsideOut" style="font-weight:bold;">
+        <li><a href="/univ/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+        <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+        <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+      </ul>
+  </div>
+
+  <div class="wrap">
+    <div class="wrap_signup">
+      <form action="/univ/signup" method="post">
+        <h2>회원가입</h2>
+        <div class="signup_name">
+            <input type="text" id="name" class="name" name="name" placeholder="이름"><br>
+        </div>
+        <div class="signup_id">
+            <input id="email" name="email" type="text" style="cursor: auto;" class="email" placeholder="이메일">
+        </div>
+        <div class="signup_pw">
+            <input id="password" name="password" type="password" class="pw" placeholder="비밀번호" autocomplete="off">
+        </div>
+        <div class="signup_pwa">
+            <input id="password_a" name="cpassword" type="password"class="pw" placeholder="비밀번호 재입력" autocomplete="off">
+        </div>
+      </form>
+        <div class="submit">
+            <input type="submit" id="signupBtn" value="회원가입">
+        </div>
+        <p class="margin">이미 계정을 갖고 계신가요? <a href="./login">지금 로그인하기</a></p>
+    </div>
+  </div>
+
+  <div class="footer">
+      <p><b>얌히<b></p>
+  </div>
+  <script>
+  $(document).ready(function() {
+    $("#signupBtn").click(function() {
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var pw = $("#password").val();
+        var cpw = $("#password_a").val();
+
+        if (email.length < 8 || email.length>=320) {
+          alert("이메일이 양식에 적합하지 않습니다.");
+        } else if (pw.length < 4 || cpw.length < 4) {
+          alert("비밀번호는 4자 이상 입력해주세요.");
+        } else if (pw !== cpw) {
+          alert("비밀번호가 일치하지 않습니다.");
+        } else {
+          $.ajax({
+            url:"/univ/signup",
+            async: true,
+            type : "POST",
+            data : {
+              pw : pw,
+              email : email,
+              name : name
+            },
+            dataType: 'json',
+            success : function (data) {
+              if(data.msg == "중복Email") {
+                alert("이미 존재하는 Email입니다.");
+              } else if(data.msg == "성공") {
+                  alert("정상적으로 회원가입 되었습니다.");
+                  location.href = '/univ';
+              }
+            }
+          });
+        }
+      });
+  });
+
+  </script>
+</body>
+</html>

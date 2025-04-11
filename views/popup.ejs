@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html class="no-js">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="../assets/bootstrap-5.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/985c0d22bf.js" crossorigin="anonymous"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin:0;
+}
+
+  table.type05 {
+    border-spacing: 0px;
+    text-align: center;
+    line-height: 1.5;
+
+    margin: 15px;
+    font-size: 13px;
+    border:1px solid #f9f9f9;
+  }
+
+  table.type05 th {
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    background: #F9F9F9;
+    border: 0.5px solid #F3F3F3;
+  }
+
+  table.type05 td {
+    border: 0.5px solid #F3F3F3;
+    width: 350px;
+    padding: 10px;
+  }
+
+  .innerwrap {
+    margin: 0px;
+    padding: 20px;
+    height: 55px;
+    border-bottom:1px solid #ddd;
+  }
+
+  h2 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-size: 25px;
+    color: white;
+  }
+
+  #svyYr {
+    margin-left:20px;
+    margin-top:15px;
+    float:left;
+    height: 27px;
+    text-align: center;
+  }
+
+  #create_pdf {
+    margin-right:20px;
+    margin-top:15px;
+    float:right;
+  }
+
+  #TableAndChart {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .no-js { display:none; }
+
+  .univ_logo {
+    display: inline-block;
+    position: relative;
+    float: right;
+    margin-right: 20px;
+  }
+
+.pdfBtn {
+  display: block;
+  background-color: #0064A5;
+  color:white;
+  border: none;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.Btn_up{
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  outline: 0;
+  border: 0;
+  background-color: #0064A5;
+  color: white;
+  font-size:20px;
+  position:fixed;
+  z-index:999;
+  bottom:20px;
+  right:20px;
+  opacity: 80%;
+  cursor: pointer;
+}
+
+.non {
+  text-align:center;
+  margin-top: 50px;
+  font-size: 20px;
+}
+</style>
+<head>
+    <title>비교하기</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<div id="chartDiv">
+  <div class="innerwrap">
+    <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/>
+  </div>
+  <% if (rows.length > 0) {%>
+  <form>
+    <select name="svyYr" id = "svyYr" onchange="handleOnChange(this)">
+      <option value="none">==공시년도==</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2019">2019</option>
+      <option value="2018">2018</option>
+      <option value="2017">2017</option>
+      <option value="2016">2016</option>
+    </select>
+  </form>
+  <button class="pdfBtn" id="create_pdf">pdf로 출력하기</button>
+<div id="TableAndChart">
+  <table class="type05" id="comptable" style="border: 1px solid #444444;">
+      <tr>
+          <th scope="row">공시년도</th>
+          <th scope="row">학교명</th>
+          <th scope="row">지역</th>
+          <th scope="row">본분교명</th>
+          <th scope="row">대학구분</th>
+      </tr>
+      <%
+      for(var i=0; i<rows.length; i++) {
+      %>
+      <tr>
+          <td><%=rows[i].svyYr%></td>
+          <td><%=rows[i].schlKrnNm%></td>
+          <td><%=rows[i].znNm%></td>
+          <td><%=rows[i].clgcpDivNm%></td>
+          <td><%=rows[i].schlKndNm%></td>
+        </tr>
+      <%}%>
+  </table>
+<div id="chart">
+<input type='hidden' id=results value="<%=rows2%>"/>
+<canvas id="myChart" style="margin:0px auto; width:800px;"></canvas>
+</div>
+
+<script> //비교탭
+$(function(){
+  $('html').removeClass('no-js');
+});
+//전체선택/해제
+$(document).ready(function() {
+    $("#allCk").click(function() {
+      if($("#allCk").is(":checked")) $("input[name=comp]").prop("checked", true);
+      else $("input[name=comp]").prop("checked", false);
+    });
+
+    $("input[name=comp]").click(function() {
+      var total = $("input[name=comp]").length;
+      var checked = $("input[name=comp]:checked").length;
+
+      if(total != checked) $("#allCk").prop("checked", false);
+      else $("#allCk").prop("checked", true);
+    });
+  });
+
+  $(document).ready(function() {
+    const table = document.getElementById('comptable');
+      var aaa = [];
+      var headCell = '';
+      var tdCell1 = '';
+      var tdCell2 = '';
+      $("input[name='comp']:checked", opener.document).each(function() {
+        aaa.push($(this).attr('data-name'));
+      });
+
+      for(var i = 0; i < aaa.length; i++) {
+        var str = '<i class="fa-solid fa-chart-column" type="button" id="'+ bbb[i] +'" title="차트 보기" onclick ="chart(this.id);" style="cursor:pointer; font-size:15px;" onmouseover="this.style.color=`#0064A5`" onmouseout="this.style.color=`#000000`"></i>'
+        headCell = table.rows[0].insertCell(-1);
+        headCell.style.backgroundColor = "#F9F9F9"; // 스타일 적용
+        headCell.style.fontWeight = "bold";
+        headCell.innerHTML = aaa[i] + '   ' +str;
+
+      }
+
+
+      for(var i = 0; i < aaa.length; i++) {
+        if( aaa[i] == "졸업생 취업률" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].studFjobrat%>+" %"
+          <% } %>
+        } else if( aaa[i] == "재학생 충원률" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].studOrate%>+" %"
+          <% } %>
+        } else if( aaa[i] == "신입생 충원률" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].studFrate%>+" %"
+          <% } %>
+        } else if( aaa[i] == "전임교원 강의담당비율" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].fTimelecRatio%>+" %"
+          <% } %>
+        } else if( aaa[i] == "전임교원 확보율" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].fTimeAqRate_currentStud%>+" %"
+          <% } %>
+        } else if( aaa[i] == "수익용 기본재산확보율" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              tdCell1.innerText = <%=rows[j].acq_rate%>+" %"
+          <% } %>
+        } else if( aaa[i] == "평균등록금" ) {
+          <% for (var j = 0; j < rows.length; j++) { %>
+              tdCell1 = table.rows[<%=j+1%>].insertCell(-1);
+              if (<%=rows[j].avgTuit%> >= 1000000) {
+                tdCell1.innerText = <%=rows[j].avgTuit%>+" 원"
+              } else {
+                tdCell1.innerText = <%=rows[j].avgTuit%>*1000+" 원"
+              }
+          <% } %>
+        }
+      }
+    });
+
+    function handleOnChange(e) {      // OK 버튼 클릭하면
+        const value = e.value;
+
+        $.ajax({
+            url: '/compare/postTest',       // postTest 주소로
+            async: true,            // 동기화 - 서버에서 반응이 올때까지 기다림
+            type: 'POST',           // POST 방식으로
+            data: {
+              value: value // 텍스트필드에 입력한 값을 test라는 이름으로 보냄
+            },
+            dataType: 'json',
+            success: function(data) {   // POST 요청 성공 시
+                location.href = '/univ/popup/' + value;
+
+            },
+            error: function(err) {      // POST 요청 실패 시
+                alert("보내기 실패 " + err);
+            }
+        });
+    };
+
+
+
+  // === include 'setup' then 'config' above ===
+
+  jsonText = JSON.parse(document.getElementById("results").value);
+  let compdata = [];
+  let svyyr = [];
+  let acq_rate = [];
+  let schlId = [];
+  let schlKrnNm = [];
+  let avgTuit = [];
+  let studOrate = [];
+  let studFjobrat = [];
+  let studFrate = [];
+  let fTimeAqRate_currentStud = [];
+  let fTimelecRatio = [];
+  let max;
+  let stepSize;
+
+  jsonText.forEach((item,idx)=>{
+    svyyr.push(parseInt(item.svyyr));
+    schlId.push(parseInt(item.schlId));
+    schlKrnNm.push(item.schlKrnNm);
+    avgTuit.push(parseFloat(item.avgTuit));
+    studOrate.push(parseFloat(item.studOrate));
+    studFjobrat.push(parseFloat(item.studFjobrat));
+    studFrate.push(parseFloat(item.studFrate));
+    fTimeAqRate_currentStud.push(parseFloat(item.fTimeAqRate_currentStud));
+    fTimelecRatio.push(parseFloat(item.fTimelecRatio));
+    acq_rate.push(parseFloat(item.acq_rate));
+    compdata.push(parseFloat(item.compdata));
+  });
+
+  var aaa = [];
+  $("input[name='comp']:checked", opener.document).each(function() {
+    aaa.push($(this).attr('data-name'));
+  });
+
+  var bbb = [];
+    $("input[name='comp']:checked", opener.document).each(function() {
+      bbb.push($(this).val());
+    });
+    console.log(bbb);
+
+    $(document).ready(function() {
+      if( aaa[0] == "졸업생 취업률" ) {
+        console.log(aaa[0]);
+        compdata = studFjobrat;
+        stepSize = 10;
+        max = 100;
+      } else if (aaa[0] == "신입생 충원률") {
+        compdata = studFrate;
+        stepSize = 20;
+        max = 120;
+      } else if( aaa[0] == "재학생 충원률" ) {
+        compdata = studOrate;
+        stepSize = 20;
+        max = 120;
+      } else if( aaa[0] == "전임교원 강의담당비율" ) {
+        compdata = fTimelecRatio;
+        stepSize = 10;
+        max = 100;
+      } else if( aaa[0] == "전임교원 확보율" ) {
+        compdata = fTimeAqRate_currentStud;
+        stepSize = 10;
+        max = 100;
+      } else if( aaa[0] == "수익용 기본재산확보율" ) {
+        compdata = acq_rate;
+        stepSize = 10;
+        max = 200;
+      } else if( aaa[0] == "평균등록금" ) {
+        compdata = avgTuit;
+        stepSize = 1000000;
+        max = 7000000;
+      }
+
+      console.log(compdata);
+      const labels = aaa;
+      const data = {
+      labels: schlKrnNm,
+      datasets: [{
+        label: aaa[0],
+        data: compdata,
+        backgroundColor: [
+          'rgba(255, 99, 122, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 205, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(201, 203, 207, 0.2)'
+        ],
+        borderColor: [
+          'rgb(255, 99, 132)',
+          'rgb(255, 159, 64)',
+          'rgb(255, 205, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
+          'rgb(153, 102, 255)',
+          'rgb(201, 203, 207)'
+        ],
+        borderWidth: 1
+      }]
+
+    };
+    console.log(max);
+    console.log(stepSize);
+    const config = {
+      type: 'bar',
+      data: data,
+      options: {
+        scales: {
+          y: {
+              min:0,
+              max:max,
+              stepSize: stepSize,
+          }
+        }
+      },
+    };
+
+    var myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+});
+
+
+  function chart(clickedId) {
+    var labelNm = "";
+    $('#myChart').remove();
+    $('#chart').append('<canvas id="myChart" style="margin:0px auto; width:800px;"></canvas>');
+
+    if ( clickedId == "avgTuit") {
+        console.log(clickedId);
+        compdata = avgTuit;
+        labelNm = "평균 등록금";
+        console.log(labelNm);
+        stepSize = 1000000;
+        max = 7000000;
+    } else if ( clickedId == "studFjobrat") {
+        console.log(clickedId);
+        compdate = studFjobrat;
+        labelNm = "졸업생 취업률";
+        stepSize = 10;
+        max = 100;
+    } else if ( clickedId == "studOrate") {
+         console.log(clickedId);
+         compdata = studOrate;
+         labelNm = "재학생 충원률";
+         stepSize = 20;
+         max = 120;
+   } else if ( clickedId == "studFrate") {
+    console.log(clickedId);
+    compdata = studFrate;
+    labelNm = "신입생 충원률";
+    stepSize = 20;
+    max = 120;
+  } else if ( clickedId == "fTimelecRatio") {
+   console.log(clickedId);
+   compdata = fTimelecRatio;
+   labelNm = "전임교원 강의담딩비율";
+   stepSize = 10;
+   max = 100;
+  } else if ( clickedId == "fTimeAqRate_currentStud") {
+   console.log(clickedId);
+   compdata = fTimeAqRate_currentStud;
+   labelNm = "전임교원 확보율";
+   stepSize = 10;
+   max = 100;
+  } else if ( clickedId == "acq_rate") {
+   console.log(clickedId);
+   compdata = acq_rate;
+   labelNm = "수익용 기본 재산 확보율";
+   stepSize = 10;
+   max = 200;
+  }
+  console.log(max);
+  console.log(stepSize);
+  const labels = labelNm;
+  const data = {
+    labels: schlKrnNm,
+    datasets: [{
+      label: labelNm,
+      data: compdata,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 205, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(201, 203, 207, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)',
+        'rgb(255, 159, 64)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(54, 162, 235)',
+        'rgb(153, 102, 255)',
+        'rgb(201, 203, 207)'
+      ],
+      borderWidth: 1
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+            min:0,
+            max:max,
+            stepSize: stepSize
+        }
+      }
+    },
+  };
+  var myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+  var offset = $('#myChart').offset(); //선택한 태그의 위치를 반환               
+  //animate()메서드를 이용해서 선택한 태그의 스크롤 위치를 지정해서 0.4초 동안 부드럽게 해당 위치로 이동함           
+  $('html').animate({scrollTop : offset.top}, 400);
+
+}
+
+$('#create_pdf').click(function() {
+  //pdf_wrap을 canvas객체로 변환
+  html2canvas($('#chartDiv')[0]).then(function(canvas) {
+    let imgData = canvas.toDataURL('image/png');
+
+          let margin = 10; // 출력 페이지 여백설정
+          let imgWidth = 210 - (10 * 2); // 이미지 가로 길이(mm) A4 기준
+          let pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
+          let imgHeight = canvas.height * imgWidth / canvas.width;
+          let heightLeft = imgHeight;
+          let orientation = "landscape";
+
+          let doc = new jsPDF('p', 'mm');
+          let position = margin;
+
+          // 첫 페이지 출력
+          doc.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+    doc.save('chart.pdf'); //pdf저장
+  });
+});
+
+$(function(){
+    var svyYr = "<%=svyYr%>";
+    if (svyYr == "2021") {
+      $('#svyYr').val(2021).prop('selected', true);
+    } else if (svyYr == "2020") {
+      $('#svyYr').val(2020).prop('selected', true);
+    } else if (svyYr == "2019") {
+      $('#svyYr').val(2019).prop('selected', true);
+    } else if (svyYr == "2018") {
+      $('#svyYr').val(2018).prop('selected', true);
+    } else if (svyYr == "2017") {
+      $('#svyYr').val(2017).prop('selected', true);
+    } else if (svyYr == "2016") {
+      $('#svyYr').val(2016).prop('selected', true);
+    }
+  });
+</script>
+</div>
+<div style="position: absolute; right: 0px; bottom: 0px;">
+<button class="Btn_up" onClick="javascript:window.scrollTo(0,0)"><i class="fa-solid fa-angles-up"></i></button>
+</div>
+<% } else {%>
+  <style> .no-js { display:block; }</style>
+  <div class="non">
+    <h3>&nbsp;&nbsp;관심대학이 존재하지 않습니다.</h3> <!-- 검색 대학 목록 없는 이미지 보여주기 -->
+  </div>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_K7aZUG.json"  background="transparent"  speed="1"  style="width:400px; height: auto; margin: 0 auto; margin-top:10px;"  loop  autoplay></lottie-player>
+<% } %>
+</div>
+</body>
+</html>

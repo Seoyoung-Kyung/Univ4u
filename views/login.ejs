@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<style>
+<%- include ('style.ejs') %>
+
+.wrap_login{
+  width: 650px;
+ height: 350px;
+ background: white;
+ border-radius: 20px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-direction: row;
+ box-shadow: 10px 10px 10px grey;
+}
+h2{
+  margin-top: 5px;
+  text-align: center;
+}
+.wrap{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f8f8;
+  flex-direction: row;
+}
+
+.submit {
+  margin-top: 20px;
+  width: 100%;
+
+}
+.submit input {
+  width: 100%;
+  height: 37px;
+  border: 0;
+  outline: none;
+  border-radius: 40px;
+  background: linear-gradient(to left, rgb(0, 100, 165), rgb(106, 161, 197));
+  color: white;
+  font-size: 1.0em;
+  letter-spacing: 2px;
+  cursor: pointer;
+  align-items: center;
+  text-align: center;
+}
+.signup{
+  font-size: 13px;
+  margin-top: 20px;
+}
+
+.login_id, .login_pw {
+  margin-top: 8px;
+  width: 80%;
+}
+
+#loginBtn {
+  margin: 0 auto;
+}
+
+.login_id input, .login_pw input{
+  width: 100%;
+  height: 30px;
+  border-radius: 7px;
+  margin-top: 5px;
+  padding: 0px 20px;
+  border: 3px solid #646464;
+  outline: none;
+}
+
+.footer {
+  margin-top: 0px;
+}
+
+#loginForm {
+
+  text-align: center;
+  flex-direction: column;
+  margin-left: 10px;
+  margin-right: 30px;
+}
+
+.signup a{
+    text-decoration: none;
+    color: black;
+  }
+  .signup a:hover{
+    text-decoration: underline;
+  }
+  <%-include ('rank_css.ejs') %>
+</style>
+<head>
+  <link rel="icon" href="/views/img/favicon.png">
+    <title>univ</title>
+</head>
+<body>
+  <div id="favrank">
+    <h5>실시간 관심 대학 순위&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+
+      <div class ="animated-text">
+        <% for(var i=0; i<rows.length; i++) { %>
+        <div class="line"><%=i+1%>. <%=rows[i].schlKrnNm%>(<%=rows[i].count%>)</div>
+        <% }%>
+      </div>
+  </div>
+  <div class="topnav" >
+    <a href="/univ">
+  <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/></a>
+  <% if(cookie ==="false"){ %>
+  <ul id ="fromInsideOut" style="font-weight:bold;">
+    <li class="active"><a href="/univ/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+    <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+    <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+  </ul>
+  <% }else { %>
+    <ul id ="fromInsideOut" style="font-weight:bold;">
+      <li><a href="/univ/logout">&nbsp;&nbsp;&nbsp;&nbsp;로그아웃&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+      <li class="cookiename"><%=cookie%>님</li>
+      <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+      <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+    </ul>
+  <% }%>
+  </div>
+  <div class="wrap">
+
+    <div class="wrap_login">
+      <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+      <lottie-player src="https://assets3.lottiefiles.com/private_files/lf30_fw6h59eu.json"  background="transparent"  speed="0.4"  style="width: 300px; height: 300px;"  autoplay loop  ></lottie-player>
+      <div id="loginForm">
+      <form class="login" action="/univ/login" method="post">
+        <h2>로그인</h2>
+        <div class="login_id">
+            <input type="text" name="email" id="email" placeholder="이메일" autocomplete="off">
+        </div>
+        <div class="login_pw">
+            <input type="password" name="pw" id="pw" placeholder="비밀번호" autocomplete="off">
+        </div>
+        <div class="submit">
+            <input type="submit" id="loginBtn" value="로그인" autocomplete="off">
+        </div>
+        </form>
+
+        <div class="signup">
+            <a href="/univ/signup">회원가입</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%-include ('footer.ejs') %>
+  <script>
+  $(document).ready(function() {
+    $("#loginBtn").click(function() {
+        var email = $("#email").val();
+        var pw = $("#pw").val();
+
+        $.ajax({
+          url:"/univ/login",
+          async: true,
+          type : "POST",
+          data : {
+            pw : pw,
+            email : email,
+          },
+          dataType: 'json',
+          success : function (data) {
+            if(data.msg == "없는 이메일") {
+              alert("없는 이메일입니다. 다시 입력해주세요.");
+              location.href = '/univ/login';
+            } else if(data.msg == "로그인 실패") {
+                alert("잘못된 비밀번호입니다. 다시 입력해주세요.");
+                location.href = '/univ/login';
+            } else if(data.msg == "로그인 성공") {
+              console.log(data.msg);
+                location.href = '/univ';
+            }
+          }
+        });
+
+      });
+  });
+
+
+  $("#login_form").keypress(function (e){
+      if(e.keyCode === 13) {
+        $("#loginBtn").click();
+      }
+    });
+
+  </script>
+</body>
+<style>
+.footer {
+  margin-top: 0px;
+}
+</style>
+</html>

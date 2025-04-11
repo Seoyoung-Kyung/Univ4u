@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript"></script>
+<link href="../assets/bootstrap-5.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/985c0d22bf.js" crossorigin="anonymous"></script>
+<head>
+    <title>비교하기</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+
+<body>
+
+<div id="tab02">
+    <h4>비교대상항목</h4><hr>
+    <div>전체 선택<input type="checkbox" id="allCk"></div>
+      <li>학생</li>
+        <input type="checkbox" name="comp" value="27" data-name="졸업생 취업률">졸업생 취업률
+        <input type="checkbox" name="comp" value="6" data-name="재학생 충원률">재학생 충원률
+        <input type="checkbox" name="comp" value="3" data-name="신입생 충원률">신입생 충원률(정원내)
+      <li>교원·연구</li>
+        <input type="checkbox" name="comp" value="43" data-name="전임교원 강의담당비율">전임교원 강의 담당 비율
+        <input type="checkbox" name="comp" value="67" data-name="전임교원 확보율">전임교원 확보율
+      <li>교육여건</li>
+        <input type="checkbox" name="comp" value="52" data-name="수익용 기본재산확보율">수익용 기본 재산 확보율
+      <li>예·결산</li>
+        <input type="checkbox" name="comp" value="38" data-name="평균등록금">평균 등록금<br>
+      <button type="button" id="compare" value="비교하기" onclick="showPopup();"><hr>
+</div>
+
+<script> //비교탭
+
+//전체선택/해제
+$(document).ready(function() {
+    $("#allCk").click(function() {
+      if($("#allCk").is(":checked")) $("input[name=comp]").prop("checked", true);
+      else $("input[name=comp]").prop("checked", false);
+    });
+
+    $("input[name=comp]").click(function() {
+      var total = $("input[name=comp]").length;
+      var checked = $("input[name=comp]:checked").length;
+
+      if(total != checked) $("#allCk").prop("checked", false);
+      else $("#allCk").prop("checked", true);
+    });
+  });
+
+  function showPopup() {
+    window.open("/univ/popup", "a", "width=900, height=700, left=100, top=50");
+  }
+
+
+</script>
+</body>
+
+</html>

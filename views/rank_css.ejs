@@ -1,0 +1,66 @@
+.animated-text{
+  color: #000000;
+  top: 50%;
+  left: 50%;
+  background: white;
+  padding: 0 10px;
+  height: 32px;
+  overflow: hidden;
+  width: 200px;
+  border-radius: 20px;
+
+
+}
+
+.line{
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 13px;
+  line-height: 60px;
+}
+
+.line:first-child{
+  animation: anim 15s infinite;
+}
+
+@keyframes anim {
+  0%{
+    margin-top : -10px;
+  }
+  20%{
+    margin-top : -75px;
+  }
+  40%{
+    margin-top : -135px;
+  }
+  60%{
+    margin-top : -195px;
+  }
+  80%{
+    margin-top : -255px;
+  }
+  100%{
+    margin-top : -10px;
+  }
+
+}
+
+#favrank {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+  background-color: #0064A5;
+  height:33px;
+  margin:0 auto;
+
+}
+
+h5 {
+  margin:0 auto;
+  padding-top: 6px;
+  color: white;
+  text-align: center;
+  font-weight: lighter;
+  float: left;
+  margin-left: 35%;
+}

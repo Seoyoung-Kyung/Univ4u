@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="no-js">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<link href="../assets/bootstrap-5.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/985c0d22bf.js" crossorigin="anonymous"></script>
+<style>
+  <%- include ('style.ejs') %>
+  <%- include ('header.ejs') %>
+  <%-include ('rank_css.ejs') %>
+
+  .no-js { display:none; }
+
+  ul {
+    padding-inline-start: 0px;
+  }
+
+  table.type05 {
+    border-collapse: separate;
+    border-spacing: 1px;
+    text-align: center;
+    line-height: 1.5;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin: 5px 2.5px;
+    font-size: 14px;
+  }
+
+  table.type05 th {
+    position: sticky;
+    top: 0px;
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    background: #F9F9F9;
+  }
+
+  table.type05 td {
+    width: 350px;
+    padding: 10px;
+    vertical-align: top;
+  }
+
+  #tab01 i {
+    font-size: 25px;
+  }
+
+  /*tab css*/
+  .tab {
+    width:890px;
+    height:auto;
+    margin: 0px auto;
+    padding-top:30px;
+  }
+
+  .tabcontent {
+    padding: 20px;
+    height:auto;
+    width:850px;
+    border:1px solid #ddd;
+    border-top:none;
+  }
+
+  .mp_btn {
+    margin-left: 350px;
+  }
+  .deleteBtn {
+    background-color: #565656;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+  .compBtn {
+    background-color:#0064A5;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+  .non {
+  text-align:center;
+  margin-top: 170px;
+  font-size: 20px;
+ }
+ .txt_mp_length{
+   float: left;
+   font-size: 13px;
+   color: #626a73;
+ }
+ .likeBtn {
+ background-color:transparent;
+ border:0;
+ cursor:pointer;
+ font-size: 20px;
+ }
+ tr:hover { background-color: #e3f0ff; }
+</style>
+<head>
+  <link rel="icon" href="/views/img/favicon.png">
+    <title>univ</title>
+</head>
+<body>
+
+<div class="topnav">
+  <a href="/univ">
+    <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/>
+  </a>
+  <% if(cookie == "false"){ %>
+  <ul id ="fromInsideOut" style="font-weight:bold;">
+    <li><a href="/univ/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+    <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+    <li class="active"><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+  </ul>
+  <% } else { %>
+  <ul id ="fromInsideOut">
+    <img class ="person_emoji" src="/views/img/person_emoji.png" style="width:20px; height:auto; margin-top:18px;"/><span>&nbsp;&nbsp;<%=cookieNm%> 님</span>
+    <li><a href="/univ/logout">&nbsp;&nbsp;&nbsp;&nbsp;로그아웃&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+    <li class="active"><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+    <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+  </ul>
+  <% }%>
+</div>
+  <div class="tab">
+    <ul class="tabnav">
+      <li><a href="#tab01">나의 관심 대학</a></li>
+    </ul>
+
+    <div class="tabcontent">
+      <div id="tab01">
+        </div>
+        <form action="/univ/delUniv_process" method="post">
+          <div style="overflow:scroll; height:400px; overflow-x: hidden;">
+            <div class="txt_mp_length" id="mp_length"></div>
+            <table class="type05" id="my_table" style="margin-top:30px;">
+              <% if (rows.length > 0) { %>
+                <tr>
+                                <th scope="row" style="width:70px;"><input type="checkbox" id="cbx_chkAll"></th>
+                                <th scope="row" style="width:250px;">학교명</th>
+                                <th scope="row" style="width:100px;">본분교</th>
+                                <th scope="row" style="width:80px;">설립구분</th>
+                                <th scope="row" style="width:150px;">학교구분</th>
+                                <th scope="row" style="width:200px;">지역</th>
+                                <th scope="row" style="width:70px;"></th>
+                              </tr>
+              <% for(var i=0; i<rows.length; i++) { %>
+                <tr>
+                  <td><input type="checkbox" id="schlId" class="schlId" name="schlId" value="<%=rows[i].schlId%>"></td>
+                    <td id="sch"><%=rows[i].schlKrnNm%></td>
+                    <td><%=rows[i].znNm%></td>
+                    <td><%=rows[i].clgcpDivNm%></td>
+                    <td><%=rows[i].schlKndNm%></td>
+                    <td><button type="submit" class="likeBtn" id="likeBtn" value="<%=rows[i].schlId%>"><i class="fa-solid fa-heart-circle-minus" style="color:#525252;"></div>
+                </tr>
+              <% } %>
+            </table>
+          </div>
+          <hr>
+          <div class="mp_btn">
+          <input type="submit" class="deleteBtn" id="deleteBtn" value="삭제하기" >
+          </div>
+        </form>
+        <% } else  {
+          if(cookie === "false") { %>
+            <script>
+              alert('로그인해야 사용 가능합니다.');
+              location.href="/univ/login"
+            </script>
+        <%  } else  { %>
+          <div class="non">
+          <h3>관심대학이 존재하지 않습니다.</h3> <!-- 검색 대학 목록 없는 이미지 보여주기 -->
+          </div>
+      <%  }
+        } %>
+      </div>
+    </div>
+  </div>
+<%-include ('footer.ejs') %>
+<script>
+  $(function(){
+    $('html').removeClass('no-js');
+  });
+//
+  function submit2(comp) {
+    comp.action="/univ/mpComp_process";
+    comp.submit();
+    return true;
+
+  }
+
+  $(document).ready(function() {
+    $("#cbx_chkAll").click(function() {
+      if($("#cbx_chkAll").is(":checked")) {
+        $("input[name=schlId]").prop("checked", true);
+      }
+      else {
+        $("input[name=schlId]").prop("checked", false);
+      }
+    });
+
+    $("input[name=schlId]").click(function() {
+      var total = $("input[name=schlId]").length;
+      var checked = $("input[name=schlId]:checked").length;
+      if(total != checked) $("#cbx_chkAll").prop("checked", false);
+      else $("#cbx_chkAll").prop("checked", true);
+    });
+  });
+
+  $(document).ready(function(){
+    var rows = document.getElementById("my_table").getElementsByTagName("tr");
+    console.log(rows.length);   // tbody tr 개수 = 2
+    rowlen = rows.length -1;
+    var rows_text = "※ " + rowlen + "개의 관심 대학이 있습니다.";
+    var mp_length = document.getElementById("mp_length");
+    mp_length.innerHTML = rows_text;
+});
+
+//드래그
+var dragchkstat = "off";
+function dragchkNOOP() { return false; }
+function dragchkOnMouseDown() {
+      if (this.checked) {
+              dragchkstat = "uncheck"; this.checked = false;
+      } else {
+              dragchkstat = "check"; this.checked = true;
+      }
+      return false;
+}
+function dragchkOnMouseOver() {
+      switch (dragchkstat) {
+              case "off":
+                      break;
+              case "check":
+                      this.focus(); this.checked = true; break;
+              case "uncheck":
+                      this.focus(); this.checked = false; break;
+      }
+      return false;
+}
+$("#my_table").on('click', 'tr', function(e){
+  if( $(e.target).is('input:checkbox') ) return;
+  var chkbox = $(this).find('td:first-child :checkbox');
+  chkbox.prop('checked', !chkbox.prop('checked'));
+});
+
+function dragchkOnMouseUp() { dragchkstat = "off"; return true; }
+for (i = 0; i < document.dragchkform.schlId.length; i++) {
+      document.dragchkform.schlId[i].onclick = dragchkNOOP;
+      document.dragchkform.schlId[i].onmousedown = dragchkOnMouseDown;
+      document.dragchkform.schlId[i].onmouseover = dragchkOnMouseOver;
+      document.onmouseup = dragchkOnMouseUp;
+}
+</script>
+</body>
+</html>

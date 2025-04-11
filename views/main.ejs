@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/lib/w3.css">
+<style>
+  <%- include ('style.ejs') %>
+
+  .mySlides {
+    display:none;
+  }
+  <%-include ('rank_css.ejs') %>
+
+</style>
+
+<head>
+  <link rel="icon" href="/views/img/favicon.png">
+    <title>univ</title>
+</head>
+<body>
+  <div id="favrank">
+    <h5>실시간 관심 대학 순위&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+      <div class ="animated-text">
+        <% for(var i=0; i<rows.length; i++) { %>
+        <div class="line"><%=i+1%>. <%=rows[i].schlKrnNm%>(<%=rows[i].count%>)</div>
+        <% }%>
+      </div>
+  </div>
+  <div class="topnav" >
+    <a href="/univ">
+  <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/></a>
+  <% if(cookie ==="false"){ %>
+  <ul id ="fromInsideOut" style="font-weight:bold;">
+    <li><a href="/univ/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+    <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+    <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+  </ul>
+  <% }else { %>
+    <ul id ="fromInsideOut">
+      <img class ="person_emoji" src="/views/img/person_emoji.png" style="width:20px; height:auto; margin-top:18px;"/><span>&nbsp;&nbsp;<%=cookieNm%> 님</span>
+      <li><a href="/univ/logout">&nbsp;&nbsp;&nbsp;&nbsp;로그아웃&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+      <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+      <li><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+    </ul>
+  <% }%>
+</div>
+  <div style="max-width:800px; margin: 0px auto;">
+    <img class="mySlides" src="/views/img/main_img1.jpg" style="width:100%;">
+    <img class="mySlides" src="/views/img/main_img2.jpg" style="width:100%;">
+  </div>
+<%-include ('footer.ejs') %>
+</body>
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}
+    x[myIndex-1].style.display = "block";
+    setTimeout(carousel, 2000); // Change image every 2 seconds
+}
+</script>
+</html>

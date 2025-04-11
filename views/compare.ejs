@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html class="no-js">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/lib/w3.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://kit.fontawesome.com/985c0d22bf.js" crossorigin="anonymous"></script>
+
+<style>
+  <%- include ('style.ejs') %>
+
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+
+  }
+
+  .no-js { display:none; }
+
+  .bg { /* 검색창 배경 */
+    overflow: hidden;
+    background-color: #f8f8f8;
+    height:110px;
+    width:100%;
+    border: solid 1px;
+    border-color:#d6d6d6;
+  }
+
+  ul {
+    padding-inline-start: 0px;
+  }
+
+  /*tab css*/
+  .tab {
+    width:890px;
+    height:auto;
+    margin: 0px auto;
+    padding-top:30px;
+  }
+
+  .tabnav {
+    font-size:0;
+    width:890px;
+    border:1px solid #ddd;
+  }
+
+  .tabnav li {
+    display: inline-block;
+    height:46px;
+    text-align:center;
+    border-right:1px solid #ddd;
+  }
+
+  .tabnav li a:before {
+    content:"";
+    position:absolute;
+    left:0;
+    top:0px;
+    width:100%;
+    height:3px;
+  }
+
+  .tabnav li a.active:before {
+    background:#0064A5;
+  }
+
+  .tabnav li a.active {
+    border-bottom:1px solid #fff;
+  }
+
+  .tabnav li a {
+    position:relative;
+    display:block;
+    background: #f8f8f8;
+    color: #000;
+    padding:0 50px;
+    line-height:46px;
+    text-decoration:none;
+    font-size:15px;
+  }
+
+  .tabnav li a.active {
+    background:#fff;
+    color:#000;
+  }
+
+  .tabnav li a:hover {
+    background:#fff;
+    color:#0064A5;
+  }
+
+  .tabcontent {
+    padding: 20px;
+    height:auto;
+    width:850px;
+    border:1px solid #ddd;
+    border-top:none;
+  }
+
+  .search {
+    position: relative;
+    width: 500px;
+    margin:auto;
+    padding-top:30px;
+  }
+
+  .search input {
+    width: 100%;
+    border: 5px solid #646464;
+    border-radius: 30px;
+    padding: 12px 0px 12px 16px ;
+    font-size: 15px;
+  }
+
+  .btn_search{
+    font-weight : 900;
+    font-family: "Font Awesome 5 Free";
+    background-color : transparent;
+    border : none;
+    cursor : pointer;
+    position : absolute;
+    width: 20px;
+    top: 44px;
+    right: 2px;
+    margin: 0;
+    font-size:20px;
+  }
+
+  .btn_search::before{
+    content : "\f002";
+  }
+
+  table.type05 {
+    border-collapse: separate;
+    border-spacing: 1px;
+    text-align: center;
+    line-height: 1.5;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin: 5px 2.5px;
+    font-size: 14px;
+  }
+
+  table.type05 th {
+    position: sticky;
+    top: 0px;
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    background: #F9F9F9;
+  }
+
+  table.type05 td {
+    width: 350px;
+    padding: 10px;
+    vertical-align: top;
+  }
+
+  #tab01 i {
+    font-size: 25px;
+  }
+
+  .loc {
+    float:right;
+    font-size: 14px;
+  }
+
+  .commpBtn {
+    display: block;
+    background-color: #0064A5;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+
+  .btn_addUniv {
+   display: block;
+    background-color: #0064A5;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+
+  #tab02 {
+    margin: 10px;
+  }
+
+  h2 {
+    font-size: 25px;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.6em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+  }
+
+  #tab02 li {
+    font-size: 20px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  label {
+    text-align: center;
+  }
+
+  li::marker {
+    color:#0064A5;
+  }
+
+  .compL {
+   font-size: 21px;
+   font-style: bold;
+   color: #0064A5;
+   margin-bottom: 5px;
+  }
+
+ .compS {
+   margin-bottom: 10px;
+   color: 525252;
+   font-size: 15px;
+   margin-right: 10px;
+  }
+
+ .compAll {
+   text-align: left;
+   color: #525252;
+  }
+
+ .compAll label {
+   font-size: 23px;
+  }
+
+ input[id="comp"] {
+   position: relative;
+   bottom: -0.5px;
+ }
+
+ form {
+   margin-top: 35px;
+ }
+
+ .non {
+   text-align:center;
+   margin-top: 10px;
+   font-size: 20px;
+ }
+
+.likeBtn {
+background-color:transparent;
+border:0;
+cursor:pointer;
+}
+ tr:hover { background-color: #e3f0ff; }
+ <%-include ('rank_css.ejs') %>
+</style>
+<head>
+  <link rel="icon" href="/views/img/favicon.png">
+
+  <title>univ</title>
+</head>
+<body>
+  <div id="favrank">
+    <h5>실시간 관심 대학 순위&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+      <div class ="animated-text">
+        <% for(var i=0; i<secondrows.length; i++) { %>
+        <div class="line"><%=i+1%>. <%=secondrows[i].schlKrnNm%>(<%=secondrows[i].count%>)</div>
+        <% }%>
+      </div>
+  </div>
+  <div class="topnav">
+    <a href="/univ">
+      <img class ="univ_logo" src="/views/img/univ_logo.png" style="width:89.5px; height:auto;"/>
+    </a>
+    <% if(cookie == "false"){ %>
+    <ul id ="fromInsideOut" style="font-weight:bold;">
+      <li><a href="/univ/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+      <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+      <li class="active"><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+    </ul>
+    <% } else { %>
+    <ul id ="fromInsideOut">
+      <img class ="person_emoji" src="/views/img/person_emoji.png" style="width:20px; height:auto; margin-top:18px;"/><span>&nbsp;&nbsp;<%=cookieNm%> 님</span>
+      <li><a href="/univ/logout">&nbsp;&nbsp;&nbsp;&nbsp;로그아웃&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+      <li><a href="/univ/mypage">&nbsp;마이페이지&nbsp;</a></li>
+      <li class="active"><a href="/univ/compare">&nbsp;대학 비교&nbsp;</a></li>
+    </ul>
+    <% }%>
+  </div>
+  <div class="bg">
+    <div class="search">
+      <input type="text" id="name" placeholder="대학명을 검색하세요" value="<%=schName%>" autocomplete="off" onkeypress="if( event.keyCode == 13 ){enterKey();}">
+      <button class="btn_search" id="searchBtn"></button>
+    </div>
+  </div>
+  <div class="tab">
+    <ul class="tabnav">
+      <li><a href="#tab01">1. 대학 목록</a></li>
+      <li><a href="#tab02">2. 대학 비교</a></li>
+    </ul>
+    <div class="tabcontent">
+       <div id="tab01">
+         <% if (cookie != "false" && (isSearch == false || rows.length > 0)) { %>
+           <div class="loc">
+             <label><input type="radio" name="locType" id="locType1" value="전체" >전체</input></label>
+             <label><input type="radio" name="locType" id="locType2" value="수도권" >수도권</input></label>
+             <label><input type="radio" name="locType" id="locType3" value="비수도권">비수도권</input></label>&nbsp;
+           </div>
+          <hr style="border:0px;">
+          <form action="/univ/addUniv_process" method="post" name="dragchkform">
+           <div style="overflow:scroll; height:400px; overflow-x: hidden;">
+               <table id="tbl_univList" class="type05">
+                 <tr>
+                   <th scope="row" name="dragchkform" style="width:10px;"><input type="checkbox" id="cbx_chkAll"></th>
+                   <th scope="row" style="width:100px;">학교명</th>
+                   <th scope="row">지역</th>
+                   <th scope="row">본분교</th>
+                   <th scope="row">설립유형</th>
+                   <th scope="row"></th>
+
+                 </tr>
+                 <%
+                 var arr = [];
+                 for(var i=0; i<thirdrows.length; i++) {
+                      arr[i]=thirdrows[i].myfav
+                  }
+                  console.log(arr)
+                  %>
+                 <% for(var i=0; i<rows.length; i++) { %>
+                 <tr>
+                   <td><input type="checkbox" id="schlId" class="schlId" name="schlId" value="<%=rows[i].schlId%>"></td>
+                     <td id="sch"><%=rows[i].schlKrnNm%></td>
+                     <td><%=rows[i].znNm%></td>
+                     <td><%=rows[i].clgcpDivNm%></td>
+                     <td><%=rows[i].schlKndNm%></td>
+                     <%
+                     if (arr.includes(rows[i].schlId)) {
+                        %>
+                    <td><button type="submit" name="added" class="likeBtn" id="likeBtn" value="<%=rows[i].schlId%>" onclick='return submit2(this.form);'><i class="fa-solid fa-heart" style="color:#f52750;"></div>
+                      <%
+                      } else {
+                                        %>
+                    <td><button type="submit" class="likeBtn" id="likeBtn" value="<%=rows[i].schlId%>"><i class="fa-regular fa-heart" style="color:#525252;"></div>
+                      <%}%>
+                 </tr>
+                 <%}%>
+              </table>
+             </div>
+             <hr>
+
+             <input type="submit" class="btn_addUniv" id="btn_addUniv" value="관심대학추가">
+         </form>
+        <% } else {
+         if (cookie === "false") { %>
+           <script>
+             alert('로그인해야 사용 가능합니다.');
+             location.href="/univ/login"
+           </script>
+        <% } else { %>
+          <div class="non">
+            <h4>검색한 대학이 존재하지 않습니다.</h4>
+          </div>
+         <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+         <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_itlrgnef.json"  background="transparent"  speed="1"  style="width:300px; height: auto; margin: 0 auto;"  loop  autoplay></lottie-player>
+        <% }
+        } %>
+        </div>
+
+    <div id="tab02">
+      <div class="compAll">
+        <label>비교대상항목&nbsp;</label>
+        <label style="float:right; margin-top:9px; font-size:15.5px;"><input type="checkbox" id="allCk" style="float:right; margin-top:6.5px;">전체선택</label>
+      </div>
+      <hr style="color:#0064A5;">
+      <div class="compL">학생</div>
+      <div class="compS">
+          <label><input type="checkbox" name="comp" id="comp" value="studFjobrat" data-name="졸업생 취업률">&nbsp;졸업생 취업률&nbsp;&nbsp;</label>
+          <label><input type="checkbox" name="comp" id="comp" value="studOrate" data-name="재학생 충원률">&nbsp;재학생 충원률&nbsp;&nbsp;</label>
+          <label><input type="checkbox" name="comp" id="comp" value="studFrate" data-name="신입생 충원률">&nbsp;신입생 충원률(정원내)<br></label>
+      </div>
+      <div class="compL">교원·연구</div>
+      <div class="compS">
+        <label><input type="checkbox" name="comp" id="comp" value="fTimelecRatio" data-name="전임교원 강의담당비율">&nbsp;전임교원 강의담당비율&nbsp;&nbsp;</label>
+        <label><input type="checkbox" name="comp" id="comp" value="fTimeAqRate_currentStud" data-name="전임교원 확보율">&nbsp;전임교원 확보율<br>
+      </div>
+      <div class="compL">교육여건</div>
+      <div class="compS">
+        <label><input type="checkbox" name="comp" id="comp" value="acq_rate" data-name="수익용 기본재산확보율">&nbsp;수익용 기본재산확보율&nbsp;&nbsp;<br></label>
+      </div>
+      <div class="compL"> 예·결산</div>
+      <div class="compS">
+        <label><input type="checkbox" name="comp" id="comp" value="avgTuit" data-name="평균등록금">&nbsp;평균등록금 <br></label>
+      </div>
+      <input type="hidden" name="hiddenValue" id="hiddenValue" value=""/>
+      <div>
+        <hr>
+        <input type="submit" class="commpBtn" id="compare" value="비교하기" onclick="showPopup();">
+      </div>
+    </div>
+  </div>
+</div>
+<%-include ('footer.ejs') %>
+<script>
+  $(function(){
+    $('.tabcontent > div').hide();
+    $('.tabnav a').click(function() {
+      $('.tabcontent > div').hide().filter(this.hash).fadeIn();
+      $('.tabnav a').removeClass('active');
+      $(this).addClass('active');
+      return false;
+    }).filter(':eq(0)').click();
+  });
+
+  function submit2(comp) {
+    comp.action="/univ/delUniv_process";
+    comp.submit();
+    return true;
+  }
+
+  $("#tbl_univList").on('click', 'tr', function(e){
+    if( $(e.target).is('input:checkbox') ) return;
+    var chkbox = $(this).find('td:first-child :checkbox');
+    chkbox.prop('checked', !chkbox.prop('checked'));
+  });
+
+  $("#searchBtn").click(function(){
+    var schName = $("#name").val();
+    // schName이 존재하지 않는 대학명인 경우 존재하지 않는 대학이라는 내용 보여주기
+    if (schName != '') {
+      $.ajax({
+          url: '/compare/postTest',       // postTest 주소로
+          async: true,            // 동기화 - 서버에서 반응이 올때까지 기다림
+          type: 'POST',           // POST 방식으로
+          data: {
+              test: schName,
+              isSearch: true  // 텍스트필드에 입력한 값을 test라는 이름으로 보냄
+          },
+          dataType: 'json',
+          success: function(data) {   // POST 요청 성공 시
+              // alert("보내기 성공");
+              location.href = '/univ/compare/' + schName;
+          },
+          error: function(err) {      // POST 요청 실패 시
+              alert("검색을 실패하셨습니다." + err);
+          }
+        });
+      } else {
+        alert('검색할 대학명을 입력하세요.');
+      }
+  });
+
+  $(function(){
+    var locType = "<%=locType%>";
+    if (locType == "수도권") {
+      $('input:radio[id="locType2"]').prop('checked', true);
+    } else if (locType == "비수도권") {
+      $('input:radio[id="locType3"]').prop('checked', true);
+    } else {
+      $('input:radio[id="locType1"]').prop('checked', true);
+    }
+  });
+
+  //전체선택/해제
+  $(document).ready(function() {
+    $("#allCk").click(function() {
+      if($("#allCk").is(":checked")) $("input[name=comp]").prop("checked", true);
+      else $("input[name=comp]").prop("checked", false);
+    });
+
+    $(document).ready(function() {
+
+       console.log(arr);
+      $("#btn_addUniv").click(function() {
+        console.log("bd" + arr);
+      });
+    });
+
+    $("input[name=comp]").click(function() {
+      var total = $("input[name=comp]").length;
+      var checked = $("input[name=comp]:checked").length;
+
+      if(total != checked) $("#allCk").prop("checked", false);
+      else $("#allCk").prop("checked", true);
+    });
+  });
+
+  function showPopup() {
+    if ($("input:checkbox[name='comp']").is(":checked")==false) {
+      alert("비교항목을 선택해주세요.");
+      return;
+    }
+    window.open("/univ/popup/2021", "a", "width=1100, height=700, left=100, top=50");
+  }
+
+  //체크박스 전체 선택
+  $(document).ready(function() {
+    $("#cbx_chkAll").click(function() {
+      if($("#cbx_chkAll").is(":checked")) $("input[name=schlId]").prop("checked", true);
+      else $("input[name=schlId]").prop("checked", false);
+    });
+
+    $("input[name=chk]").click(function() {
+      var total = $("input[name=chk]").length;
+      var checked = $("input[name=schlId]:checked").length;
+
+      if(total != checked) $("#cbx_chkAll").prop("checked", false);
+      else $("#cbx_chkAll").prop("checked", true);
+    });
+  });
+
+  $(document).ready(function() {
+     $("#allCk").click(function() {
+        if($("#allCk").is(":checked")) $("input[name=comp]").prop("checked", true);
+        else $("input[name=comp]").prop("checked", false);
+     });
+
+     $("input[name=comp]").click(function() {
+        var total = $("input[name=comp]").length;
+        var checked = $("input[name=comp]:checked").length;
+
+        if(total != checked) $("#allCk").prop("checked", false);
+        else $("#allCk").prop("checked", true);
+     });
+  });
+
+  $(function(){
+    $('html').removeClass('no-js');
+  });
+
+
+
+  function enterKey(){
+    var schName = $("#name").val();
+    // schName이 존재하지 않는 대학명인 경우 존재하지 않는 대학이라는 내용 보여주기
+    if (schName != '') {
+      $.ajax({
+          url: '/compare/postTest',       // postTest 주소로
+          async: true,            // 동기화 - 서버에서 반응이 올때까지 기다림
+          type: 'POST',           // POST 방식으로
+          data: {
+              test: schName,
+              isSearch: true  // 텍스트필드에 입력한 값을 test라는 이름으로 보냄
+          },
+          dataType: 'json',
+          success: function(data) {   // POST 요청 성공 시
+              // alert("보내기 성공");
+              location.href = '/univ/compare/' + schName;
+          },
+          error: function(err) {      // POST 요청 실패 시
+              alert("검색을 실패하셨습니다." + err);
+          }
+        });
+      } else {
+        alert('검색할 대학명을 입력하세요.');
+      }
+  }
+
+  var dragchkstat = "off";
+  function dragchkNOOP() { return false; }
+  function dragchkOnMouseDown() {
+        if (this.checked) {
+                dragchkstat = "uncheck"; this.checked = false;
+        } else {
+                dragchkstat = "check"; this.checked = true;
+        }
+        return false;
+  }
+  function dragchkOnMouseOver() {
+        switch (dragchkstat) {
+                case "off":
+                        break;
+                case "check":
+                        this.focus(); this.checked = true; break;
+                case "uncheck":
+                        this.focus(); this.checked = false; break;
+        }
+        return false;
+  }
+  function dragchkOnMouseUp() { dragchkstat = "off"; return true; }
+  for (i = 0; i < document.dragchkform.schlId.length; i++) {
+        document.dragchkform.schlId[i].onclick = dragchkNOOP;
+        document.dragchkform.schlId[i].onmousedown = dragchkOnMouseDown;
+        document.dragchkform.schlId[i].onmouseover = dragchkOnMouseOver;
+        document.onmouseup = dragchkOnMouseUp;
+  }
+
+  $("input:radio[name=locType]").click(function(){      // OK 버튼 클릭하면
+    var locType = $('input[name=locType]:checked').val();
+    $.ajax({
+      url: '/compare/postTest',       // postTest 주소로
+        async: true,            // 동기화 - 서버에서 반응이 올때까지 기다림
+        type: 'POST',           // POST 방식으로
+        data: {
+          test: locType,
+          isSearch: false  // 텍스트필드에 입력한 값을 test라는 이름으로 보냄
+        },
+        dataType: 'json',
+        success: function(data) {   // POST 요청 성공 시
+
+          if (locType != undefined) {
+            location.href = '/univ/compare/loc/' + locType;
+          } else {
+            location.href = '/univ/compare/';
+          }
+
+        },
+        error: function(err) {      // POST 요청 실패 시
+            alert("보내기 실패 " + err);
+        }
+    });
+  });
+
+
+</script>
+</body>
+</html>
